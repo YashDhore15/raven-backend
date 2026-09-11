@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TenantService {
 
-    Tenant createTenant(Tenant tenant);
+	Tenant createTenant(Tenant tenant, String password);
 
     Tenant getTenantById(Long id);
 

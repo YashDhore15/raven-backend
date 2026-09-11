@@ -3,6 +3,7 @@ package com.raven.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.raven.entity.Tenant;
@@ -12,14 +13,29 @@ import com.raven.repository.TenantRepository;
 public class TenantServiceImpl implements TenantService {
 
     private final TenantRepository tenantRepository;
+    private final PasswordEncoder passwordEncoder;
     
     @Autowired
-    public TenantServiceImpl(TenantRepository tenantRepository) {
+    public TenantServiceImpl(
+            TenantRepository tenantRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.tenantRepository = tenantRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+//    @Override
+//    public Tenant createTenant(Tenant tenant) {
+//        return tenantRepository.save(tenant);
+//    }
+    
     @Override
-    public Tenant createTenant(Tenant tenant) {
+    public Tenant createTenant(Tenant tenant, String password) {
+
+        String hashedPassword = passwordEncoder.encode(password);
+
+        tenant.setPasswordHash(hashedPassword);
+
         return tenantRepository.save(tenant);
     }
 
