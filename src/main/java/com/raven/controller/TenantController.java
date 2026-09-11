@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raven.dto.TenantCreateRequest;
+import com.raven.dto.TenantResponse;
 import com.raven.entity.Tenant;
 import com.raven.service.TenantService;
 
@@ -31,15 +32,25 @@ public class TenantController {
 //	}
 	
 	@PostMapping("/api/v1/tenants")
-	public Tenant createTenant(@Valid @RequestBody TenantCreateRequest request) {
+	public TenantResponse createTenant(@Valid @RequestBody TenantCreateRequest request) {
 
 	    Tenant tenant = new Tenant();
 
 	    tenant.setName(request.getName());
 	    tenant.setEmail(request.getEmail());
-	    tenant.setPasswordHash(request.getPassword());
 
-	    return tenantService.createTenant(tenant);
+	    Tenant savedTenant = tenantService.createTenant(tenant, request.getPassword());
+	    
+	    TenantResponse response = new TenantResponse();
+
+	    response.setId(savedTenant.getId());
+	    response.setName(savedTenant.getName());
+	    response.setEmail(savedTenant.getEmail());
+	    response.setCreatedAt(savedTenant.getCreatedAt());
+	    response.setUpdatedAt(savedTenant.getUpdatedAt());
+
+	    return response;
+
 	}
 }
 

@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:8080/api/v1/tenants
+description: ""
+url: http://localhost:8080/api/v1/tenants
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"jon\",\r
+
+    \    \"email\": \"jon@gmail.com\",\r
+
+    \    \"password\": \"jon123\"\r
+
+    }"
+order: 1789080849302
