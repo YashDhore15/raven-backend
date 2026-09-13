@@ -1,8 +1,9 @@
 package com.raven.service;
 
-import com.raven.entity.Tenant;
-
 import java.util.List;
+
+import com.raven.dto.TenantUpdateRequest;
+import com.raven.entity.Tenant;
 
 public interface TenantService {
 
@@ -12,7 +13,7 @@ public interface TenantService {
 
     List<Tenant> getAllTenants();
 
-    Tenant updateTenant(Long id, Tenant tenant);
+    Tenant updateTenant(Long id, TenantUpdateRequest tenant);
 
     void deleteTenant(Long id);
 }

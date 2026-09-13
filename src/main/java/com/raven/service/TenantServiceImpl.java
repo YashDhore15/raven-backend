@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.raven.dto.TenantUpdateRequest;
 import com.raven.entity.Tenant;
+import com.raven.exception.EmailAlreadyExistsException;
+import com.raven.exception.TenantNotFoundException;
 import com.raven.repository.TenantRepository;
 
 @Service
@@ -31,6 +34,10 @@ public class TenantServiceImpl implements TenantService {
     
     @Override
     public Tenant createTenant(Tenant tenant, String password) {
+    	
+    	if (tenantRepository.existsByEmail(tenant.getEmail())) {
+    		throw new EmailAlreadyExistsException("Email is already registered");
+        }
 
         String hashedPassword = passwordEncoder.encode(password);
 
@@ -41,21 +48,21 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant getTenantById(Long id) {
-        return tenantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tenant not found"));
+        return tenantRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new TenantNotFoundException("Tenant not found"));
     }
 
     @Override
     public List<Tenant> getAllTenants() {
-        return tenantRepository.findAll();
+        return tenantRepository.findAllByDeletedAtIsNull();
     }
 
     @Override
-    public Tenant updateTenant(Long id, Tenant tenant) {
+    public Tenant updateTenant(Long id, TenantUpdateRequest tenant) {
         Tenant existingTenant = getTenantById(id);
 
-        existingTenant.setName(tenant.getName());
-        existingTenant.setEmail(tenant.getEmail());
+        existingTenant.setName(tenant.name());
+        existingTenant.setEmail(tenant.email());
 
         return tenantRepository.save(existingTenant);
     }
